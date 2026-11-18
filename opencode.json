@@ -1,0 +1,16 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "servers": {
+      "browser-watch-playwright": {
+        "type": "remote",
+        "url": "http://127.0.0.1:8931/mcp"
+      },
+      "browser-watch-browser-use": {
+        "type": "local",
+        "command": ["docker", "exec", "-i", "browser-watch", "browser-use", "--cli-mcp"],
+        "disabled": true
+      }
+    }
+  }
+}
