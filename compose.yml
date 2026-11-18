@@ -14,7 +14,7 @@ services:
       SCREEN_RESOLUTION: "${SCREEN_RESOLUTION:-1600x1000}" # 1280x1390 | 1920x1080 (1–9999 px by side)
       VNC_VIEW_ONLY: "${VNC_VIEW_ONLY:-on}"                # on | off
     ports:
-      - "127.0.0.1:6081:6080"
+      - "127.0.0.1:6080:6080"
       - "127.0.0.1:8931:8931"
     volumes:
       - browser-profile:/home/node/profile
