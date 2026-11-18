@@ -59,18 +59,26 @@ has those IDs, create the directory with `mkdir -p -m 700 recordings`.
 Otherwise, or if Compose already created it as root, run
 `sudo install -d -o 1000 -g 1000 -m 0700 recordings`.
 
+Recording is manual by default. To start a five-minute recording each time
+the container starts, add this to `.env` next to `compose.yml`:
+
+```dotenv
+RECORDING_AUTOSTART=on
+RECORDING_DURATION_SECONDS=300
+```
+
 Run `docker compose up -d --build --wait` once to install FFmpeg and mount the
 output directory. Upgrading an existing deployment recreates the container once;
 keep the same Compose project name to reuse the browser profile volume. You can
 then record without changing Compose or restarting Chromium:
 
 ```sh
-docker compose exec browser-watch record start      # Up to 30 minutes
+docker compose exec browser-watch record start      # Uses RECORDING_DURATION_SECONDS
 docker compose exec browser-watch record status
 docker compose exec browser-watch record stop       # Finalize the MP4 early
 ```
 
-For a shorter recording, pass the number of seconds (1–1800), for example
+To override the default duration, pass the number of seconds (1–1800), for example
 `docker compose exec browser-watch record start 300`. The command returns
 once FFmpeg is writing; it stops at the time or size limit, whichever comes first.
 Use `docker compose exec -T` instead when scripting these commands.
@@ -98,6 +106,9 @@ set them directly in the service's `environment` block:
 | `SCREEN_RESOLUTION` | `1600x1000` | `WIDTHxHEIGHT` in pixels (1–9999 per side), e.g. `1280x1390` or `1920x1080`. Sets the virtual screen and Chromium's initial window size. |
 | `VNC_VIEW_ONLY` | `on` | `on` blocks keyboard and mouse input in noVNC; `off` lets you control the same Chromium session as the agent. |
 | `CHROMIUM_SANDBOX` | `on` | `on` enables Chromium's sandbox; `off` disables it. Use `off` only for disposable tests with trusted content. |
+| `RECORDING_AUTOSTART` | `off` | `on` starts one recording when Chromium is ready; `off` leaves recording manual. |
+| `RECORDING_DURATION_SECONDS` | `1800` | Default duration in seconds (1–1800) for automatic and manual recordings. `record start <seconds>` overrides it for one recording. |
+| `RECORDING_MAX_MIB` | `2048` | Total recording directory budget in MiB (32–999999). |
 
 For example, to use a 1280×1390 screen with manual control:
 

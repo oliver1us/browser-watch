@@ -18,6 +18,11 @@ case "${VNC_VIEW_ONLY:-on}" in
     *) echo "VNC_VIEW_ONLY must be 'on' or 'off'." >&2; exit 1 ;;
 esac
 
+case "${RECORDING_AUTOSTART:-off}" in
+    on|off) ;;
+    *) echo "RECORDING_AUTOSTART must be 'on' or 'off'." >&2; exit 1 ;;
+esac
+
 # Keep the noVNC interface in sync with x11vnc, regardless of saved settings or URL flags.
 printf '{"view_only": %s}\n' "$view_only" > /usr/share/novnc/mandatory.json
 
@@ -86,6 +91,10 @@ chromium "${sandbox[@]}" \
     --window-size="${resolution/x/,}" &
 chromium_pid="$!"
 wait_ready Chromium "$chromium_pid" curl -fsS --max-time 1 "$BU_CDP_URL/json/version"
+
+if [[ "${RECORDING_AUTOSTART:-off}" == on ]]; then
+    record start || echo "Automatic recording failed; the browser will continue running." >&2
+fi
 
 playwright-mcp --host 0.0.0.0 --port 8931 \
     --allowed-hosts '127.0.0.1:8931,localhost:8931,browser-watch:8931' \

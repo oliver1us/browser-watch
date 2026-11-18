@@ -62,7 +62,7 @@ case "$1" in
         ;;
 esac
 
-duration="${2-1800}"
+duration="${2-${RECORDING_DURATION_SECONDS:-1800}}"
 max_mib="${RECORDING_MAX_MIB:-2048}"
 if [[ ! "$duration" =~ ^[1-9][0-9]{0,3}$ ]] || (( duration > 1800 )); then
     fail "Recording duration must be an integer from 1 to 1800 seconds."

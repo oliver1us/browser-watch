@@ -13,8 +13,11 @@ services:
       CHROMIUM_SANDBOX: "${CHROMIUM_SANDBOX:-on}"          # on | off
       SCREEN_RESOLUTION: "${SCREEN_RESOLUTION:-1600x1000}" # 1280x1390 | 1920x1080 (1–9999 px by side)
       VNC_VIEW_ONLY: "${VNC_VIEW_ONLY:-on}"                # on | off
+      RECORDING_AUTOSTART: "${RECORDING_AUTOSTART:-off}"    # on | off
+      RECORDING_DURATION_SECONDS: "${RECORDING_DURATION_SECONDS:-1800}" # 1–1800 seconds
+      RECORDING_MAX_MIB: "${RECORDING_MAX_MIB:-2048}"       # 32–999999 MiB
     ports:
-      - "127.0.0.1:6080:6080"
+      - "0.0.0.0:6080:6080"
       - "127.0.0.1:8931:8931"
     volumes:
       - browser-profile:/home/node/profile
