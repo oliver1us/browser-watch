@@ -23,7 +23,7 @@ directly. If Docker is on a remote server, run this on the machine where you
 will open the viewer, then open the same link:
 
 ```sh
-ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:6080:127.0.0.1:6081 user@server
+ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:6080:127.0.0.1:6080 user@server
 ```
 
 Replace `user@server` with your SSH login and leave the tunnel running. If you
