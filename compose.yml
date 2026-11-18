@@ -10,6 +10,8 @@ services:
     security_opt:
       - seccomp=./chromium-seccomp.json
     environment:
+      PUID: "${PUID:-1000}"
+      PGID: "${PGID:-1000}"
       CHROMIUM_SANDBOX: "${CHROMIUM_SANDBOX:-on}"          # on | off
       SCREEN_RESOLUTION: "${SCREEN_RESOLUTION:-1600x1000}" # 1280x1390 | 1920x1080 (1–9999 px by side)
       VNC_VIEW_ONLY: "${VNC_VIEW_ONLY:-on}"                # on | off
@@ -21,7 +23,11 @@ services:
       - "127.0.0.1:8931:8931"
     volumes:
       - browser-profile:/home/node/profile
-      - ./recordings:/recordings
+      - type: bind
+        source: ./recordings
+        target: /recordings
+        bind:
+          create_host_path: false
 
 volumes:
   browser-profile:

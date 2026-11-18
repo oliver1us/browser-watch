@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
+if (( EUID == 0 )); then
+    exec as-browser /usr/local/bin/record "$@"
+fi
 umask 077
 export LC_ALL=C
 

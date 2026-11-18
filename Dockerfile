@@ -29,15 +29,16 @@ RUN install -d -o node -g node -m 0700 /home/node/profile \
     && chown node:node /usr/share/novnc/mandatory.json
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/browser-watch
 COPY --chmod=0755 record.sh /usr/local/bin/record
+COPY --chmod=0755 init.sh /usr/local/bin/browser-watch-init
+COPY --chmod=0755 as-browser.sh /usr/local/bin/as-browser
 
-USER node
 WORKDIR /home/node
 EXPOSE 6080 8931
 
 # An MCP GET without a session returns 400 once the transport is listening.
 HEALTHCHECK --interval=20s --timeout=5s --start-period=30s \
-    CMD curl -fsS -o /dev/null http://127.0.0.1:9222/json/version \
+    CMD as-browser sh -c 'curl -fsS -o /dev/null http://127.0.0.1:9222/json/version \
         && curl -fsS -o /dev/null http://127.0.0.1:6080/vnc.html \
-        && test "$(curl -sS -o /dev/null -w '%{http_code}' http://127.0.0.1:8931/mcp)" = 400
+        && test "$(curl -sS -o /dev/null -w "%{http_code}" http://127.0.0.1:8931/mcp)" = 400'
 
-ENTRYPOINT ["/usr/local/bin/browser-watch"]
+ENTRYPOINT ["/usr/local/bin/browser-watch-init"]

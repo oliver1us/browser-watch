@@ -23,6 +23,11 @@ case "${RECORDING_AUTOSTART:-off}" in
     *) echo "RECORDING_AUTOSTART must be 'on' or 'off'." >&2; exit 1 ;;
 esac
 
+if [[ ! -d /recordings || ! -w /recordings || ! -x /recordings ]]; then
+    echo "Cannot write to /recordings as $(id -u):$(id -g). Check ./recordings ownership on the Docker host (README: Record a session)." >&2
+    exit 1
+fi
+
 # Keep the noVNC interface in sync with x11vnc, regardless of saved settings or URL flags.
 printf '{"view_only": %s}\n' "$view_only" > /usr/share/novnc/mandatory.json
 

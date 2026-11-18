@@ -8,7 +8,7 @@
       },
       "browser-watch-browser-use": {
         "type": "local",
-        "command": ["docker", "exec", "-i", "browser-watch", "browser-use", "--cli-mcp"],
+        "command": ["docker", "exec", "-i", "--user", "node", "browser-watch", "browser-use", "--cli-mcp"],
         "disabled": true
       }
     }
