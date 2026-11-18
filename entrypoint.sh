@@ -24,6 +24,7 @@ printf '{"view_only": %s}\n' "$view_only" > /usr/share/novnc/mandatory.json
 cleanup() {
     trap - EXIT
     trap '' INT TERM
+    record stop >/dev/null || true
     if [[ -n "$chromium_pid" ]]; then
         kill -TERM "$chromium_pid" 2>/dev/null || true
         wait "$chromium_pid" 2>/dev/null || true

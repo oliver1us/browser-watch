@@ -1,8 +1,8 @@
 # Browser Watch
 
 Run Chromium in Docker, control it with a browser agent, and watch the same
-session live in noVNC. The viewer is read-only by default. Browser Watch does
-not record video or generate tests.
+session live in noVNC. The viewer is read-only by default. An optional
+[recorder](#record-a-session) saves the visible session as an MP4.
 
 ## Quick start
 
@@ -50,6 +50,43 @@ command.
 
 Run `opencode mcp list` to check the connection, then ask the agent to open
 `https://example.com` with Playwright and watch it navigate in noVNC.
+
+## Record a session
+
+On the Docker host, create a private output directory next to `compose.yml`.
+The browser runs as UID and GID `1000` inside the container. If your host user
+has those IDs, create the directory with `mkdir -p -m 700 recordings`.
+Otherwise, or if Compose already created it as root, run
+`sudo install -d -o 1000 -g 1000 -m 0700 recordings`.
+
+Run `docker compose up -d --build --wait` once to install FFmpeg and mount the
+output directory. Upgrading an existing deployment recreates the container once;
+keep the same Compose project name to reuse the browser profile volume. You can
+then record without changing Compose or restarting Chromium:
+
+```sh
+docker compose exec browser-watch record start      # Up to 30 minutes
+docker compose exec browser-watch record status
+docker compose exec browser-watch record stop       # Finalize the MP4 early
+```
+
+For a shorter recording, pass the number of seconds (1–1800), for example
+`docker compose exec browser-watch record start 300`. The command returns
+once FFmpeg is writing; it stops at the time or size limit, whichever comes first.
+Use `docker compose exec -T` instead when scripting these commands.
+
+The recorder checks free disk space and the `./recordings/` budget before
+starting, leaving 16 MiB of headroom. The default budget is 2048 MiB; override it
+for a recording with `docker compose exec -e RECORDING_MAX_MIB=1024 browser-watch record start`
+(allowed range: 32–999999 MiB). It never deletes old videos.
+
+FFmpeg captures Xvfb display `:99` inside `browser-watch`, so no noVNC viewer
+needs to be open. Videos contain only what's visible on that display, without
+audio. MP4s are saved with UTC timestamps in `./recordings/` and are not served
+by noVNC or included in Git or the Docker build context. They may contain
+sensitive information. If your host user cannot read the directory directly,
+copy a finished video with `docker compose cp browser-watch:/recordings/<filename>.mp4 .`
+(replace `<filename>` with the name reported by `record status`).
 
 ## Environment variables
 

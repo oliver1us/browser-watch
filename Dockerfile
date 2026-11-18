@@ -15,6 +15,10 @@ RUN PLAYWRIGHT_SKIP_BROWSER_DOWNLOAD=1 npm install --global --no-audit --no-fund
     && python3 -m venv /opt/browser-use \
     && /opt/browser-use/bin/pip install --no-cache-dir "browser-use==${BROWSER_USE_VERSION}"
 
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ffmpeg util-linux \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV HOME=/home/node \
     PATH=/opt/browser-use/bin:$PATH \
     BU_CDP_URL=http://127.0.0.1:9222 \
@@ -24,6 +28,7 @@ ENV HOME=/home/node \
 RUN install -d -o node -g node -m 0700 /home/node/profile \
     && chown node:node /usr/share/novnc/mandatory.json
 COPY --chmod=0755 entrypoint.sh /usr/local/bin/browser-watch
+COPY --chmod=0755 record.sh /usr/local/bin/record
 
 USER node
 WORKDIR /home/node

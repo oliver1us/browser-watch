@@ -18,6 +18,7 @@ services:
       - "127.0.0.1:8931:8931"
     volumes:
       - browser-profile:/home/node/profile
+      - ./recordings:/recordings
 
 volumes:
   browser-profile:
