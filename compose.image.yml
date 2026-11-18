@@ -1,0 +1,4 @@
+services:
+  browser-watch:
+    build: !reset null
+    image: "${BROWSER_WATCH_IMAGE:?Set BROWSER_WATCH_IMAGE to the packaged image tag}"

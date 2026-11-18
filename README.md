@@ -174,6 +174,22 @@ ssh -N -o ExitOnForwardFailure=yes -L 127.0.0.1:8931:127.0.0.1:8931 user@server
 If you run OpenCode and view noVNC on the same machine, you can use both `-L`
 options in one SSH command.
 
+## Use a packaged image
+
+If you already have a Browser Watch image with `PUID` and `PGID` support,
+complete [quick start step 1](#quick-start). Then set `BROWSER_WATCH_IMAGE` in
+`.env` to the image's tag, such as `registry.example.com/browser-watch:1.0.0`.
+
+Start it without building:
+
+```sh
+docker compose -f compose.yml -f compose.image.yml up -d --wait
+```
+
+Use those same `-f` options when reapplying settings with `up`. The
+[`compose.image.yml`](compose.image.yml) override selects the packaged image
+instead of building from this repository.
+
 ## Operations
 
 ```sh
